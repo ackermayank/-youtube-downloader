@@ -779,5 +779,6 @@ def startup_banner():
 
 if __name__ == '__main__':
     startup_banner()
-    # Runs locally on port 5000
-    app.run(host='127.0.0.1', port=5000, debug=False)
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '0.0.0.0' if 'PORT' in os.environ else '127.0.0.1')
+    app.run(host=host, port=port, debug=False)

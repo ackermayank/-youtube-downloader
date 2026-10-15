@@ -153,3 +153,19 @@ youtube-downloader/
 - **"Video unavailable / Private"**: Private videos or videos restricted by copyright/region cannot be downloaded without authenticating with a browser cookie.
 - **"Sign in to confirm your age"**: Some age-restricted videos require YouTube account login and cannot be downloaded without session cookies.
 - **Port 5000 in use**: If another app is using port 5000, you can edit the last line of `app.py` and change `port=5000` to `port=5050`.
+
+---
+
+## ☁️ Deploying Online for Free (Render.com)
+
+If you want to host this downloader online so you can use it from any phone, laptop, or browser without keeping your computer on:
+
+1. Sign up for free at **[https://render.com](https://render.com)** with your GitHub account.
+2. Click **New +** → **Web Service**.
+3. Select your repository: **`ackermayank/-youtube-downloader`**.
+4. In the settings:
+   - **Environment**: Select **Docker** (it will automatically use the included `Dockerfile` with FFmpeg pre-installed).
+   - **Plan**: Select **Free**.
+5. Click **Create Web Service**.
+6. Render will build the container with FFmpeg in ~2 minutes and give you a live URL (e.g. `https://your-downloader.onrender.com`).
+
