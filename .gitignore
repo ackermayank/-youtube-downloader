@@ -1,0 +1,37 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary downloads and downloaded media files
+Downloads/*
+!Downloads/.gitkeep
+*.mp4
+*.mp3
+*.webm
+*.m4a
+*.part
+*.ytdl
+*.srt
+*.vtt
+*.jpg
+*.jpeg
+*.png
+
+# Logs
+*.log
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs
+.vscode/
+.idea/

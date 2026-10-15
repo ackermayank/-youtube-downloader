@@ -1,0 +1,6 @@
+# Simple Personal YouTube Video Downloader
+# Clean, minimal dependencies - No API keys or paid services required!
+
+flask>=3.0.0
+yt-dlp>=2025.1.0
+certifi>=2024.2.2
