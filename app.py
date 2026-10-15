@@ -119,12 +119,37 @@ def parse_friendly_error(error_msg: str) -> str:
         return "Network connection error while communicating with YouTube. Please verify your internet connection and try again."
     if "http error 403" in msg.lower():
         return "YouTube rejected the request (403 Forbidden). Updating yt-dlp often fixes this: run 'pip install -U yt-dlp'."
-    if "sign in to confirm you're not a bot" in msg.lower() or "bot verification" in msg.lower():
-        return "YouTube is requesting a bot verification challenge. Please wait a moment or try another video link."
+    if "sign in to confirm you're not a bot" in msg.lower() or "bot verification" in msg.lower() or "confirm you’re not a bot" in msg.lower():
+        return (
+            "YouTube Bot-Check Triggered: YouTube blocks cloud hosting & datacenter IP addresses (like Render/AWS/Vercel). "
+            "To fix this, run the app locally on your computer at http://127.0.0.1:5000 (where home IPs are not blocked), "
+            "or add a cookies.txt file to the project folder."
+        )
 
     # Remove generic technical prefixes for cleaner UI presentation
     cleaned = msg.replace("ERROR:", "").replace("[youtube]", "").strip()
     return cleaned if cleaned else "An unexpected error occurred while processing the request."
+
+
+def get_cookie_file() -> str | None:
+    """Find a cookies.txt file in project or read from YOUTUBE_COOKIES environment variable."""
+    for candidate in [
+        os.path.join(BASE_DIR, 'cookies.txt'),
+        os.path.join(DOWNLOADS_DIR, 'cookies.txt')
+    ]:
+        if os.path.exists(candidate) and os.path.getsize(candidate) > 10:
+            return candidate
+
+    env_cookies = os.environ.get('YOUTUBE_COOKIES')
+    if env_cookies:
+        tmp_path = os.path.join(BASE_DIR, '.cookies_env.txt')
+        try:
+            with open(tmp_path, 'w', encoding='utf-8') as f:
+                f.write(env_cookies)
+            return tmp_path
+        except Exception:
+            pass
+    return None
 
 
 def ensure_quicktime_compatible(filepath: str, task_id: str = None) -> str:
@@ -332,7 +357,16 @@ def run_download_job(task_id: str, options: dict):
         'fragment_retries': 10,
         'file_access_retries': 5,
         'ignoreerrors': True,  # Keep downloading even if auxiliary items like subtitles timeout
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['ios', 'android', 'mweb', 'web'],
+            }
+        }
     }
+
+    cookie_file = get_cookie_file()
+    if cookie_file:
+        ydl_opts['cookiefile'] = cookie_file
 
     if not is_playlist:
         ydl_opts['noplaylist'] = True
@@ -517,7 +551,16 @@ def fetch_info():
             'nocheckcertificate': True,
             'extract_flat': 'in_playlist' if is_playlist_url else False,
             'noplaylist': not is_playlist_url,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['ios', 'android', 'mweb', 'web'],
+                }
+            }
         }
+
+        cookie_file = get_cookie_file()
+        if cookie_file:
+            ydl_opts['cookiefile'] = cookie_file
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
