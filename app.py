@@ -357,11 +357,6 @@ def run_download_job(task_id: str, options: dict):
         'fragment_retries': 10,
         'file_access_retries': 5,
         'ignoreerrors': True,  # Keep downloading even if auxiliary items like subtitles timeout
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['ios', 'android', 'mweb', 'web'],
-            }
-        }
     }
 
     cookie_file = get_cookie_file()
@@ -551,11 +546,6 @@ def fetch_info():
             'nocheckcertificate': True,
             'extract_flat': 'in_playlist' if is_playlist_url else False,
             'noplaylist': not is_playlist_url,
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['ios', 'android', 'mweb', 'web'],
-                }
-            }
         }
 
         cookie_file = get_cookie_file()
